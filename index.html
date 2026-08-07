@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(s){s.dataset.zone='11326127',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<script>(function(s){s.dataset.zone='11516397',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+<title>Supreme Store · app marketplace</title>
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #0b0d10;
+      color: #f0f4fa;
+      padding: 1.5rem 1rem 3rem;
+      min-height: 100vh;
+      transition: background 0.2s;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      gap: 0.8rem 1.2rem;
+    }
+
+    .logo {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #c0e0ff, #8ab4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-shadow: 0 0 20px rgba(95, 158, 255, 0.25);
+    }
+    .logo i {
+      color: #5f9eff;
+      -webkit-text-fill-color: #5f9eff;
+      font-size: 1.9rem;
+      filter: drop-shadow(0 0 12px rgba(95, 158, 255, 0.4));
+    }
+    .logo span {
+      background: none;
+      -webkit-text-fill-color: #8aa9d9;
+      font-weight: 300;
+      font-size: 1.2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      background: #1a1e28;
+      border-radius: 40px;
+      padding: 0.2rem 0.2rem 0.2rem 1rem;
+      border: 1px solid #2b333f;
+      transition: 0.2s;
+      max-width: 260px;
+      flex: 1 1 180px;
+      min-width: 140px;
+      box-shadow: 0 0 12px rgba(95, 158, 255, 0.05);
+    }
+    .search-wrap:focus-within {
+      border-color: #5f9eff;
+      box-shadow: 0 0 20px rgba(95, 158, 255, 0.2), 0 0 8px rgba(95, 158, 255, 0.15);
+    }
+    .search-wrap i {
+      color: #6f7f98;
+      font-size: 0.85rem;
+      margin-right: 4px;
+    }
+    .search-wrap input {
+      background: transparent;
+      border: none;
+      padding: 0.5rem 0.3rem 0.5rem 0;
+      width: 100%;
+      color: #f0f4fa;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .search-wrap input::placeholder {
+      color: #5f6f84;
+      font-size: 0.8rem;
+    }
+
+    .admin-link {
+      display: none; /* Hides the admin link entirely */
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.7rem;
+      margin: 1.2rem 0 2rem;
+    }
+    .filter-chip {
+      background: #1a1e26;
+      padding: 0.35rem 1.1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #b0c4de;
+      border: 1px solid #2b313b;
+      cursor: pointer;
+      transition: 0.15s;
+      letter-spacing: 0.2px;
+    }
+    .filter-chip.active,
+    .filter-chip:hover {
+      background: #2a3340;
+      border-color: #5f9eff;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(95, 158, 255, 0.15), 0 0 8px rgba(95, 158, 255, 0.1);
+    }
+    .filter-chip i {
+      margin-right: 5px;
+      font-size: 0.7rem;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0 3rem;
+    }
+
+    .app-card {
+      background: #161a22;
+      border-radius: 32px;
+      padding: 1.5rem 1.2rem 1.2rem;
+      border: 1px solid #262d38;
+      transition: transform 0.2s ease, box-shadow 0.25s;
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.6);
+    }
+    .app-card:hover {
+      transform: translateY(-6px);
+      border-color: #3f4b5e;
+      box-shadow: 0 20px 30px -14px #000000aa, 0 0 30px rgba(95, 158, 255, 0.08);
+    }
+
+    .card-top {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .app-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.1rem;
+      color: #b8d0f0;
+      flex-shrink: 0;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(95, 158, 255, 0.08);
+      object-fit: cover;
+      background: #212833;
+      border: 1px solid #384152;
+      overflow: hidden;
+    }
+    .app-icon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 22px;
+      object-fit: cover;
+    }
+    .app-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.3px;
+    }
+    .dev-name {
+      font-size: 0.75rem;
+      color: #9aabbf;
+      margin-top: 2px;
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem 0.8rem;
+      font-size: 0.7rem;
+      color: #a2b7ce;
+      margin: 0.4rem 0 0.2rem;
+      background: #10141c;
+      padding: 0.4rem 0.8rem;
+      border-radius: 40px;
+      align-items: center;
+      border: 1px solid #1c232e;
+    }
+    .card-meta span i {
+      margin-right: 3px;
+      color: #6d8fc6;
+    }
+    .stars {
+      color: #f5b342;
+      letter-spacing: 1px;
+      text-shadow: 0 0 12px rgba(245, 179, 66, 0.2);
+    }
+    .desc {
+      font-size: 0.85rem;
+      color: #cbd8e8;
+      margin: 0.5rem 0 0.8rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .download-btn {
+      background: #2b8c5c;
+      border: none;
+      padding: 0.6rem 0.5rem;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 0.6rem;
+      transition: 0.15s;
+      cursor: pointer;
+      border: 1px solid #3caa74;
+      letter-spacing: 0.3px;
+      box-shadow: 0 0 20px rgba(43, 140, 92, 0.15);
+    }
+    .download-btn i {
+      font-size: 1rem;
+    }
+    .download-btn:hover {
+      background: #35a06b;
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(43, 140, 92, 0.3), 0 0 15px rgba(43, 140, 92, 0.2);
+    }
+    .download-btn.coming {
+      background: #3d4555;
+      border-color: #4e5a6e;
+      cursor: default;
+      opacity: 0.8;
+      box-shadow: none;
+    }
+    .download-btn.coming:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .detail-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    .detail-overlay.active {
+      display: flex;
+    }
+    .detail-panel {
+      background: #171d27;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 48px;
+      padding: 2rem 1.8rem 2rem;
+      border: 1px solid #2d3645;
+      box-shadow: 0 40px 60px -20px black, 0 0 50px rgba(95, 158, 255, 0.06);
+      position: relative;
+      scrollbar-width: thin;
+    }
+    .detail-panel::-webkit-scrollbar {
+      width: 5px;
+    }
+    .detail-panel::-webkit-scrollbar-thumb {
+      background: #3d4a5e;
+      border-radius: 12px;
+    }
+    .close-detail {
+      position: absolute;
+      right: 1.5rem;
+      top: 1.5rem;
+      font-size: 1.6rem;
+      color: #afc3db;
+      cursor: pointer;
+      background: #232b38;
+      width: 44px;
+      height: 44px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #364152;
+      transition: 0.2s;
+    }
+    .close-detail:hover {
+      background: #313d50;
+      color: white;
+      box-shadow: 0 0 20px rgba(95, 158, 255, 0.15);
+    }
+    .detail-header {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .detail-icon {
+      width: 90px;
+      height: 90px;
+      background: #1f2838;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      border: 1px solid #3f4b60;
+      flex-shrink: 0;
+      box-shadow: 0 0 30px rgba(95, 158, 255, 0.08);
+      overflow: hidden;
+    }
+    .detail-icon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 28px;
+      object-fit: cover;
+    }
+    .detail-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .detail-dev {
+      color: #95acc9;
+      font-size: 0.9rem;
+    }
+    .detail-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.5rem 0.8rem;
+      background: #0e131d;
+      padding: 1rem 1.2rem;
+      border-radius: 30px;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.8rem;
+      border: 1px solid #29313f;
+    }
+    .detail-meta-grid span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #bccde2;
+    }
+    .detail-meta-grid i {
+      color: #6384b3;
+      width: 18px;
+    }
+    .detail-desc {
+      line-height: 1.6;
+      color: #d2def0;
+      margin: 1rem 0;
+    }
+    .detail-screenshots {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin: 0.8rem 0 1.2rem;
+    }
+    .detail-screenshots img {
+      width: 100px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #252f3e;
+      border: 1px solid #364256;
+    }
+    .detail-features {
+      background: #10161f;
+      padding: 0.8rem 1.2rem;
+      border-radius: 24px;
+      font-size: 0.9rem;
+      margin: 0.8rem 0;
+      border-left: 4px solid #3d7eb0;
+      box-shadow: 0 0 20px rgba(61, 126, 176, 0.06);
+    }
+    .detail-features i {
+      color: #5693d4;
+      margin-right: 10px;
+      width: 20px;
+    }
+    .changelog {
+      background: #0e131d;
+      border-radius: 20px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.85rem;
+      margin: 0.5rem 0 1.2rem;
+      border: 1px solid #28303e;
+    }
+    .download-big {
+      background: #2b8c5c;
+      border: none;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 80px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      border: 1px solid #48b37c;
+      transition: 0.2s;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      box-shadow: 0 0 30px rgba(43, 140, 92, 0.15);
+    }
+    .download-big:hover {
+      background: #33a06d;
+      transform: scale(1.01);
+      box-shadow: 0 0 40px rgba(43, 140, 92, 0.3), 0 0 20px rgba(43, 140, 92, 0.15);
+    }
+    .download-big.coming {
+      background: #3a4559;
+      border-color: #4e5c72;
+      cursor: default;
+      box-shadow: none;
+    }
+    .download-big.coming:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .admin-badge {
+      font-size: 0.7rem;
+      background: #252f3e;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      color: #b0cbe7;
+      border: 1px solid #3e4b5f;
+      margin-left: 0.5rem;
+    }
+
+    @media (max-width: 560px) {
+      .header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .logo {
+        font-size: 1.6rem;
+      }
+      .search-wrap {
+        max-width: 200px;
+        flex: 1 1 140px;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .app-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      .detail-panel {
+        padding: 1.5rem 1rem;
+      }
+      .detail-header {
+        flex-wrap: wrap;
+      }
+    }
+    @media (max-width: 420px) {
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+
+  <!-- header -->
+  <div class="header">
+    <div class="logo">
+      <i class="fas fa-crown"></i> Supreme <span>Store</span>
+    </div>
+    <div class="header-actions">
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search apps..." />
+      </div>
+      <!-- Admin link is hidden via CSS (display:none) -->
+      <a href="admin.html" class="admin-link"><i class="fas fa-cog"></i> Admin</a>
+    </div>
+  </div>
+
+  <!-- filters -->
+  <div class="filter-group" id="filterGroup">
+    <span class="filter-chip active" data-filter="all"><i class="fas fa-th-large"></i> All</span>
+    <span class="filter-chip" data-filter="trending"><i class="fas fa-fire"></i> Trending</span>
+    <span class="filter-chip" data-filter="new"><i class="fas fa-star"></i> New</span>
+    <span class="filter-chip" data-filter="updated"><i class="fas fa-sync-alt"></i> Updated</span>
+    <span class="filter-chip" data-filter="top"><i class="fas fa-chart-line"></i> Top</span>
+  </div>
+
+  <!-- app grid -->
+  <div class="app-grid" id="appGrid"></div>
+
+  <!-- Detail overlay -->
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-panel" id="detailPanel">
+      <span class="close-detail" id="closeDetail"><i class="fas fa-times"></i></span>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- FIREBASE CONFIG ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzXsVe3LjZGE8C503J00KFAHT2vCrQBsg",
+      authDomain: "supreme-reward-4bfb9.firebaseapp.com",
+      databaseURL: "https://supreme-reward-4bfb9-default-rtdb.firebaseio.com",
+      projectId: "supreme-reward-4bfb9",
+      storageBucket: "supreme-reward-4bfb9.appspot.com",
+      messagingSenderId: "597180617800",
+      appId: "1:597180617800:web:98490f49e4600b932f747d",
+      measurementId: "G-KXDFKFZKQL"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database();
+    const appsRef = database.ref('apps');
+
+    // ---------- STATE ----------
+    let allApps = [];
+    let currentFilter = 'all';
+    let filteredApps = [];
+
+    // DOM refs
+    const grid = document.getElementById('appGrid');
+    const searchInput = document.getElementById('searchInput');
+    const filterChips = document.querySelectorAll('.filter-chip');
+    const detailOverlay = document.getElementById('detailOverlay');
+    const detailContent = document.getElementById('detailContent');
+    const closeDetail = document.getElementById('closeDetail');
+
+    // ---------- HELPERS ----------
+    function renderStars(rating) {
+      const full = Math.floor(rating);
+      const half = rating - full >= 0.5 ? 1 : 0;
+      let s = '';
+      for (let i = 0; i < full; i++) s += '⭐';
+      if (half) s += '✨';
+      for (let i = full + half; i < 5; i++) s += '☆';
+      return s;
+    }
+
+    // ---------- DOWNLOAD FUNCTION ----------
+    function downloadAPK(apkLink, appName, appId) {
+      if (!apkLink || apkLink.trim() === '') {
+        alert('Download link is not available.');
+        return;
+      }
+
+      try {
+        const url = new URL(apkLink);
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+          alert('Invalid download link. Please contact support.');
+          return;
+        }
+      } catch (e) {
+        alert('Invalid download link. Please contact support.');
+        return;
+      }
+
+      window.open(apkLink, '_blank');
+      
+      if (appId) {
+        const app = allApps.find(a => a.id === appId);
+        if (app) {
+          const newCount = (app.downloads || 0) + 1;
+          appsRef.child(appId).update({ downloads: newCount });
+        }
+      }
+    }
+
+    // ---------- CREATE CARD ----------
+    function createCard(app) {
+      const card = document.createElement('div');
+      card.className = 'app-card';
+      card.dataset.id = app.id;
+      const hasApk = app.apkLink && app.apkLink.trim() !== '';
+      
+      // Handle icon display - improved to handle Firebase Storage URLs
+      let iconHtml = '📱';
+      if (app.icon) {
+        const icon = app.icon;
+        // Check if it's a URL (http, https, data:image)
+        if (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('data:image')) {
+          iconHtml = `<img src="${icon}" alt="${app.name}" onerror="this.parentElement.innerHTML='📱'" />`;
+        } else {
+          // It's an emoji or text
+          iconHtml = icon;
+        }
+      }
+      
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="app-icon">${iconHtml}</div>
+          <div>
+            <div class="app-name">${app.name || 'Unnamed'}</div>
+            <div class="dev-name">${app.developer || 'Unknown'}</div>
+          </div>
+        </div>
+        <div class="card-meta">
+          <span><i class="fas fa-tag"></i> ${app.category || 'General'}</span>
+          <span class="stars">${renderStars(app.rating || 0)}</span>
+          <span><i class="fas fa-hdd"></i> ${app.size || 'N/A'}</span>
+          <span><i class="fas fa-code-branch"></i> v${app.version || '1.0'}</span>
+        </div>
+        <div class="desc">${app.description || 'No description'}</div>
+        <button class="download-btn ${!hasApk ? 'coming' : ''}" data-id="${app.id}" data-apk="${app.apkLink || ''}" data-name="${app.name || 'app'}">
+          ${hasApk ? '<i class="fas fa-download"></i> Download' : '<i class="fas fa-clock"></i> Coming Soon'}
+        </button>
+      `;
+      
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.download-btn')) return;
+        openDetail(app.id);
+      });
+      
+      const btn = card.querySelector('.download-btn');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const apk = btn.dataset.apk;
+        const name = btn.dataset.name;
+        const id = btn.dataset.id;
+        
+        if (!apk || apk.trim() === '') {
+          alert('Download link is not available.');
+          return;
+        }
+        
+        btn.innerHTML = '<span class="spinner"></span> Starting…';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+          downloadAPK(apk, name, id);
+          btn.innerHTML = '<i class="fas fa-download"></i> Download';
+          btn.disabled = false;
+        }, 300);
+      });
+      
+      return card;
+    }
+
+    // ---------- RENDER GRID ----------
+    function renderApps(appList) {
+      grid.innerHTML = '';
+      if (!appList || appList.length === 0) {
+        grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#7f8fa3; padding:3rem 0;">No apps found</p>`;
+        return;
+      }
+      // Filter out disabled apps
+      const visibleApps = appList.filter(app => app.enabled !== false);
+      visibleApps.forEach(app => {
+        grid.appendChild(createCard(app));
+      });
+    }
+
+    // ---------- FILTER + SEARCH ----------
+    function applyFilters() {
+      if (!allApps.length) {
+        renderApps([]);
+        return;
+      }
+      let filtered = [...allApps];
+      const q = searchInput.value.toLowerCase().trim();
+      if (q) {
+        filtered = filtered.filter(app => 
+          (app.name || '').toLowerCase().includes(q) || 
+          (app.developer || '').toLowerCase().includes(q) ||
+          (app.category || '').toLowerCase().includes(q)
+        );
+      }
+      if (currentFilter !== 'all') {
+        if (currentFilter === 'trending') filtered = filtered.filter(app => app.tags && app.tags.includes('trending'));
+        else if (currentFilter === 'new') filtered = filtered.filter(app => app.tags && app.tags.includes('new'));
+        else if (currentFilter === 'updated') filtered = filtered.filter(app => app.tags && app.tags.includes('updated'));
+        else if (currentFilter === 'top') filtered = filtered.filter(app => app.tags && app.tags.includes('top'));
+      }
+      filteredApps = filtered;
+      renderApps(filtered);
+    }
+
+    // ---------- DETAIL VIEW ----------
+    function openDetail(appId) {
+      const app = allApps.find(a => a.id === appId);
+      if (!app) return;
+      const hasApk = app.apkLink && app.apkLink.trim() !== '';
+      
+      let iconHtml = '📱';
+      if (app.icon) {
+        const icon = app.icon;
+        if (icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('data:image')) {
+          iconHtml = `<img src="${icon}" alt="${app.name}" onerror="this.parentElement.innerHTML='📱'" />`;
+        } else {
+          iconHtml = icon;
+        }
+      }
+      
+      detailContent.innerHTML = `
+        <div class="detail-header">
+          <div class="detail-icon">${iconHtml}</div>
+          <div>
+            <div class="detail-title">${app.name || 'Unnamed'}</div>
+            <div class="detail-dev"><i class="fas fa-user-astronaut"></i> ${app.developer || 'Unknown'}</div>
+          </div>
+        </div>
+        <div class="detail-meta-grid">
+          <span><i class="fas fa-code-branch"></i> v${app.version || '1.0'}</span>
+          <span><i class="fas fa-hdd"></i> ${app.size || 'N/A'}</span>
+          <span><i class="fas fa-calendar-alt"></i> ${app.lastUpdated || 'N/A'}</span>
+          <span><i class="fas fa-android"></i> ${app.androidRequired || 'N/A'}</span>
+          <span><i class="fas fa-star"></i> ${app.rating || 0} (${app.downloads || 0} DL)</span>
+        </div>
+        <div class="detail-desc">${app.description || 'No description'}</div>
+        <div class="detail-screenshots">
+          ${app.screenshots ? app.screenshots.map(s => `<span style="background:#1f2838; padding:0.6rem 1.1rem; border-radius:20px; font-size:1.6rem;">${s}</span>`).join('') : ''}
+        </div>
+        <div class="detail-features">
+          <i class="fas fa-check-circle"></i> Features<br>
+          ${app.features && app.features.length ? app.features.map(f => `• ${f}`).join('<br>') : 'No features listed'}
+        </div>
+        <div class="changelog"><i class="fas fa-history"></i> ${app.changelog || 'No changelog'}</div>
+        <button class="download-big ${!hasApk ? 'coming' : ''}" data-apk="${app.apkLink || ''}" data-id="${app.id}" data-name="${app.name || 'app'}" id="detailDownloadBtn">
+          ${hasApk ? '<i class="fas fa-download"></i> Download APK' : '<i class="fas fa-clock"></i> Download Coming Soon'}
+        </button>
+      `;
+      detailOverlay.classList.add('active');
+      
+      const bigBtn = document.getElementById('detailDownloadBtn');
+      if (bigBtn) {
+        bigBtn.addEventListener('click', () => {
+          const apk = bigBtn.dataset.apk;
+          const id = bigBtn.dataset.id;
+          const name = bigBtn.dataset.name;
+          
+          if (!apk || apk.trim() === '') {
+            alert('Download link is not available.');
+            return;
+          }
+          
+          bigBtn.innerHTML = '<span class="spinner"></span> Starting…';
+          bigBtn.disabled = true;
+          
+          setTimeout(() => {
+            downloadAPK(apk, name, id);
+            bigBtn.innerHTML = '<i class="fas fa-download"></i> Download APK';
+            bigBtn.disabled = false;
+          }, 300);
+        });
+      }
+    }
+
+    function closeDetailPanel() {
+      detailOverlay.classList.remove('active');
+    }
+
+    // ---------- LOAD DATA FROM FIREBASE (REAL-TIME) ----------
+    function loadAppsFromFirebase() {
+      appsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const appsArray = Object.keys(data).map(key => {
+            return { id: key, ...data[key] };
+          });
+          allApps = appsArray;
+        } else {
+          allApps = [];
+        }
+        applyFilters();
+      });
+    }
+
+    // ---------- EVENT LISTENERS ----------
+    searchInput.addEventListener('input', applyFilters);
+
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentFilter = chip.dataset.filter;
+        applyFilters();
+      });
+    });
+
+    closeDetail.addEventListener('click', closeDetailPanel);
+    detailOverlay.addEventListener('click', (e) => {
+      if (e.target === detailOverlay) closeDetailPanel();
+    });
+
+    // ---------- START ----------
+    loadAppsFromFirebase();
+  })();
+</script>
+</body>
+</html>
